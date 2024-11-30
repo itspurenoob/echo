@@ -1,1 +1,10 @@
-./echo-backend/node_modules
+# Ignore node_modules folder in the backend
+echo-backend/node_modules/
+
+# Optionally, if you have node_modules in the frontend as well
+echo-frontend/node_modules/
+
+# Ignore other common files and folders
+.DS_Store
+npm-debug.log
+.env
