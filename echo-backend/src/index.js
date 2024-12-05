@@ -1,13 +1,17 @@
-console.log("hello")
-
+const routes = require('./routes/index');
 const express = require('express');
+const helmet = require('helmet');
 const app = express();
-const PORT = process.env.PORT || 3000;
+const PORT = 3000;
 
-app.get('/', (req, res) => {
-    res.send('Hello, Echo!');
-});
 
+// Middleware to parse JSON
+app.use(express.json());
+
+// Import all routes
+app.use(routes);
+
+// Start the server
 app.listen(PORT, () => {
-    console.log(`Server is running on port ${PORT}`);
+    console.log(`Server running at http://localhost:${PORT}`);
 });
