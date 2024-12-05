@@ -1,7 +1,7 @@
 const { Pool } = require('pg');
 
 const pool = new Pool({
-  connectionString: process.env.internal_DATABASE_URL,
+  connectionString: process.env.external_DATABASE_URL,
   ssl: {
     rejectUnauthorized: false, // Render's PostgreSQL uses SSL by default
   },

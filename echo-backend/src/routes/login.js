@@ -1,10 +1,53 @@
 const express = require('express')
+const pool = require('../db/register_db/register_db');  // Import PostgreSQL connection
 const router = express.Router();
 
-// Login route
+// Function to find a user by username or email
+async function findUser(query) {
+  try {
+    const result = await pool.query(
+      'SELECT * FROM users WHERE username = $1 OR email = $2', 
+      [query, query]  // The query will be checked for both username and email
+    );
 
-router.get('/login', (req, res) => {
-	res.send("login page");
-})
+    // Check if any rows were returned
+    if (result.rows.length > 0) {
+      console.log('User found:', result.rows[0]);
+      return result.rows[0];  // Return the first matched row (user)
+    } else {
+      console.log('User not found');
+      return null;  // Return null if no user is found
+    }
+  } catch (error) {
+    console.error('Error finding user:', error);
+  }
+}
+
+// Example usage
+
+
+// Login route
+router.post('/login', async (req, res) => {
+  const { username, password } = req.body;  // Destructure username and password from request body
+  
+  // Find user by username or email (using previous code)
+  const user = await findUser(username);  // You can use the findUser function from earlier
+
+  if (!user) {
+    return res.status(401).json({ message: 'User not found' });
+  }
+
+  // Compare the entered password with the stored hashed password using bcrypt
+  const isMatch = await bcrypt.compare(password, user.password);
+  
+  if (!isMatch) {
+    return res.status(401).json({ message: 'Incorrect password' });
+  }
+
+
+
+  res.status(200).json({ message: 'Login successful', authToken: user.authToken });
+});
+
 
 module.exports = router
