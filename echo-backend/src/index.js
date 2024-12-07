@@ -1,48 +1,36 @@
-const routes = require('./routes/index');
 const express = require('express');
-const helmet = require('helmet');
-const cors = require('cors');
-const morgan = require('morgan');
-const path = require('path');
 const app = express();
+const helmet = require('helmet');
 const PORT = 3000;
+const routes = require('./routes/index');
 
-// Middleware to parse JSON
-app.use(express.json());
+app.use((req, res, next) => {
+    res.setHeader('Cross-Origin-Opener-Policy', 'same-origin');
+    res.setHeader('Cross-Origin-Embedder-Policy', 'require-corp');
+    next();
+});
 
-// Add helmet with CSP configuration
 app.use(
     helmet({
-        contentSecurityPolicy: {
             directives: {
-                defaultSrc: ["'self'"],
-                connectSrc: ["'self'", "https://localhost:3000*"],
+                reportTo: "self", // or your own reporting mechanism
+                "worker-src": "'self'", // you can define worker source policy
             },
-        },
     })
 );
-
-// Enable CORS for frontend (adjust origin as needed)
-app.use(cors({
-    origin: 'http://localhost:4000', // Your frontend origin
-    methods: ['GET', 'POST', 'PUT', 'DELETE'],
-    allowedHeaders: ['Content-Type', 'Authorization'],
-}));
-
-// Log HTTP requests
-app.use(morgan('dev'));
-
-// Serve static files
-app.use(express.static(path.join(__dirname, 'public')));
+// Middleware to parse JSON
+app.use(express.json());
 
 // Import all routes
 app.use(routes);
 
-// Error handling middleware
-app.use((err, req, res, next) => {
-    console.error(err.stack);
-    res.status(500).json({ error: 'Something went wrong!' });
+app.post("/app", (req, res) => {
+    res.send({ message: "post request" });
 });
+
+app.get('/', (req, res) => {
+    res.send('yo')
+})
 
 // Start the server
 app.listen(PORT, () => {

@@ -1,6 +1,10 @@
 const express = require('express')
 const pool = require('../db/register_db/register_db');  // Import PostgreSQL connection
 const router = express.Router();
+const bcrypt = require('bcrypt');
+const jwt = require('jsonwebtoken');
+const verifyToken = require('../middleware/VarifyToken');  // Import the middleware
+
 
 // Function to find a user by username or email
 async function findUser(query) {
@@ -26,28 +30,37 @@ async function findUser(query) {
 // Example usage
 
 
-// Login route
 router.post('/login', async (req, res) => {
-  const { username, password } = req.body;  // Destructure username and password from request body
-  
-  // Find user by username or email (using previous code)
-  const user = await findUser(username);  // You can use the findUser function from earlier
+  const { username, password } = req.body;
+  const user = await findUser(username);
 
   if (!user) {
     return res.status(401).json({ message: 'User not found' });
   }
 
-  // Compare the entered password with the stored hashed password using bcrypt
   const isMatch = await bcrypt.compare(password, user.password);
-  
   if (!isMatch) {
     return res.status(401).json({ message: 'Incorrect password' });
   }
 
+  const token = jwt.sign(
+    { userId: user.authtoken },  // Include any data you need in the token payload
+    `${process.env.JWT_SECRET}`,  // Secret key for signing the token
+    { expiresIn: '200y' }  // Token expiration (you can adjust this)
+  );
 
-
-  res.status(200).json({ message: 'Login successful', authToken: user.authToken });
+  res.json({
+    message: 'Login successful',
+    token: token
+  });
 });
 
-
+// Example of a protected route
+router.get('/protected', verifyToken, (req, res) => {
+  // If the token is valid, the `req.user` will have the decoded JWT data
+  res.json({
+    message: 'This is a protected route',
+    user: req.user // You can access user info from the token here
+  });
+});
 module.exports = router
