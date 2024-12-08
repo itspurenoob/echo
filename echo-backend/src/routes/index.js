@@ -6,7 +6,7 @@ const loginRoutes = require('./login');
 const registerRoutes = require('./register');
 
 // Use routes
-router.use('/app', loginRoutes);
-router.use('/app', registerRoutes);
+router.use('/api', loginRoutes);
+router.use('/api', registerRoutes);
 
 module.exports = router;

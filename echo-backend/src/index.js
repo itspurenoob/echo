@@ -34,7 +34,7 @@ app.use(express.json());
 // Import all routes
 app.use(routes);
 
-app.post("/app", (req, res) => {
+app.post("/api", (req, res) => {
     res.send({ message: "post request" });
 });
 
