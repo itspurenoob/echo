@@ -1,7 +1,5 @@
 const { Pool } = require('pg');
 require('dotenv').config();
-console.log(process.env.DATABASE_URL,process.env)
-
 // Replace with your Supabase credentials
 const pool = new Pool({
   connectionString: process.env.DATABASE_URL,  // Ensure this is your Supabase connection string
