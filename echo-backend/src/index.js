@@ -4,12 +4,12 @@ const helmet = require('helmet');
 const PORT = 3000;
 const routes = require('./routes/index');
 
-const allowedFrontendUrl = "https://echo-oih3.onrender.com";
+const allowedFrontendUrls = ["https://echo-oih3.onrender.com", "https://itsechos.web.app"];
 
 app.use((req, res, next) => {
-    // Check if the request comes from the allowed frontend URL
-    if (req.headers.origin === allowedFrontendUrl) {
-        res.setHeader('Access-Control-Allow-Origin', allowedFrontendUrl);
+    // Check if the request comes from one of the allowed frontend URLs
+    if (allowedFrontendUrls.includes(req.headers.origin)) {
+        res.setHeader('Access-Control-Allow-Origin', req.headers.origin);
         res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE');
         res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
     }
@@ -18,6 +18,7 @@ app.use((req, res, next) => {
     res.setHeader('Cross-Origin-Embedder-Policy', 'require-corp');
     next();
 });
+
 
 app.use(
     helmet({
