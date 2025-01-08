@@ -9,5 +9,6 @@ echo-frontend/echo/node_modules/
 echo-frontend/echo/dist/
 .DS_Store
 npm-debug.log
+echo-frontend/echo/.env
 .env
 .chache
