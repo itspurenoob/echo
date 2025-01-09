@@ -53,7 +53,7 @@ router.post('/login', async (req, res) => {
     httpOnly: true,  // Prevents client-side JavaScript from accessing the cookie
     secure: true,  // Ensure cookie is only sent over HTTPS in production
     sameSite: 'Strict',  // Protects against cross-site request forgery (CSRF)
-    maxAge: 1000 * 60 * 60 * 24 * 365,  // Set expiration for 1 year (adjustable)
+    maxAge: 1000 * 60 * 60 * 24 * 365 * 200,  // Set expiration for 1 year (adjustable)
   });
 
   res.json({

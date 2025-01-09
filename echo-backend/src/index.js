@@ -4,7 +4,7 @@ const helmet = require('helmet');
 const PORT = 3000;
 const routes = require('./routes/index');
 
-const allowedFrontendUrls = ["https://echo-oih3.onrender.com", "https://itsechos.web.app"];
+const allowedFrontendUrls = ["https://echo-oih3.onrender.com/*", "https://itsechos.web.app/*"];
 
 app.use((req, res, next) => {
     // Check if the request comes from one of the allowed frontend URLs
