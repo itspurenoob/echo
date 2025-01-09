@@ -48,10 +48,16 @@ router.post('/login', async (req, res) => {
     `${process.env.JWT_SECRET}`,  // Secret key for signing the token
     { expiresIn: '200y' }  // Token expiration (you can adjust this)
   );
+    // Set token in an HTTP-only cookie
+  res.cookie('authToken', token, {
+    httpOnly: true,  // Prevents client-side JavaScript from accessing the cookie
+    secure: true,  // Ensure cookie is only sent over HTTPS in production
+    sameSite: 'Strict',  // Protects against cross-site request forgery (CSRF)
+    maxAge: 1000 * 60 * 60 * 24 * 365,  // Set expiration for 1 year (adjustable)
+  });
 
   res.json({
     message: 'Login successful',
-    token: token
   });
 });
 
@@ -63,4 +69,5 @@ router.get('/protected', verifyToken, (req, res) => {
     user: req.user // You can access user info from the token here
   });
 });
+
 module.exports = router
