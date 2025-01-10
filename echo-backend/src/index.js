@@ -10,7 +10,7 @@ const allowedFrontendUrls = ["https://echo-oih3.onrender.com", "https://itsechos
 // CORS configuration
 const corsOptions = {
     origin: function (origin, callback) {
-        if (allowedFrontendUrls.includes(origin)) {
+        if (!origin || allowedFrontendUrls.includes(origin)) {
             callback(null, true);
         } else {
             callback(new Error('Not allowed by CORS'));
@@ -29,7 +29,12 @@ app.use(cors(corsOptions));
 // Security headers using Helmet
 app.use(
     helmet({
-        contentSecurityPolicy: false, // Adjust as necessary to avoid conflicts
+        contentSecurityPolicy: {
+            useDefaults: true,
+            directives: {
+                "script-src": ["'self'", "https://trusted.cdn.com"], // Example for whitelisting trusted sources
+            },
+        },
         crossOriginEmbedderPolicy: true, // Enforce COEP
         crossOriginOpenerPolicy: { policy: 'same-origin' }, // Enforce COOP
     })
@@ -41,14 +46,9 @@ app.use(express.json());
 // Import all routes
 app.use(routes);
 
-// Example route
+// Example POST route
 app.post("/api", (req, res) => {
     res.send({ message: "POST request received" });
-});
-
-// Start server
-app.listen(PORT, () => {
-    console.log(`Server running on port ${PORT}`);
 });
 
 app.get('/', (req, res) => {
