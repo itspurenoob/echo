@@ -18,6 +18,7 @@ const corsOptions = {
     },
     methods: ['GET', 'POST', 'PUT', 'DELETE'],
     allowedHeaders: ['Content-Type','Credentials'],
+    credentials:true,
 };
 
 // Initialize Express app
