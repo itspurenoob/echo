@@ -2,7 +2,8 @@ const jwt = require('jsonwebtoken');
 
 // JWT verification middleware
 function verifyToken(req, res, next) {
-  const token = req.header('Authorization')?.split(' ')[1]; // Extract token from 'Authorization' header
+  // Check for the token in the cookies (ensure you're using cookie-parser)
+  const token = req.cookies.authToken;  // Assumes the token is stored in a cookie named 'token'
 
   if (!token) {
     return res.status(403).json({ message: 'Access denied, token missing' });
@@ -18,4 +19,4 @@ function verifyToken(req, res, next) {
   }
 }
 
-module.exports = verifyToken
+module.exports = verifyToken;

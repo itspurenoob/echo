@@ -3,7 +3,7 @@ const cors = require('cors');
 const helmet = require('helmet');
 const routes = require('./routes/index');
 const PORT = 3000;
-
+const cookieParser = require('cookie-parser');
 // Define allowed frontend URLs
 const allowedFrontendUrls = ["https://echo-oih3.onrender.com", "https://itsechos.web.app"];
 
@@ -24,6 +24,7 @@ const corsOptions = {
 const app = express();
 
 // Enable CORS with the specified options
+app.use(cookieParser());
 app.use(cors(corsOptions));
 
 // Security headers using Helmet
