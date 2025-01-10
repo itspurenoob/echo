@@ -43,9 +43,13 @@ export default {
 
         const data = await response.json();
         console.log('Login successful:', data);
+      if (!localStorage.getItem('isLoggedIn') && typeof data.isLoggedIn === 'boolean') {
+        localStorage.setItem('isLoggedIn', JSON.stringify(data.isLoggedIn));
+      }
+
 
         // Redirect to the main app page
-        this.$router.push('/app');
+        this.$router.push('/app/me');
       } catch (error) {
         this.errorMessage = error.message;
       }
