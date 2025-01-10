@@ -1,31 +1,37 @@
 const express = require('express');
-const app = express();
+const cors = require('cors');
 const helmet = require('helmet');
-const PORT = 3000;
 const routes = require('./routes/index');
+const PORT = 3000;
 
-const allowedFrontendUrls = ["https://echo-oih3.onrender.com/", "https://itsechos.web.app/"];
+// Define allowed frontend URLs
+const allowedFrontendUrls = ["https://echo-oih3.onrender.com", "https://itsechos.web.app"];
 
-app.use((req, res, next) => {
-    // Check if the request comes from one of the allowed frontend URLs
-    if (allowedFrontendUrls.includes(req.headers.origin)) {
-        res.setHeader('Access-Control-Allow-Origin', req.headers.origin);
-        res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE');
-        res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
-    }
+// CORS configuration
+const corsOptions = {
+    origin: function (origin, callback) {
+        if (allowedFrontendUrls.includes(origin)) {
+            callback(null, true);
+        } else {
+            callback(new Error('Not allowed by CORS'));
+        }
+    },
+    methods: ['GET', 'POST', 'PUT', 'DELETE'],
+    allowedHeaders: ['Content-Type'],
+};
 
-    res.setHeader('Cross-Origin-Opener-Policy', 'same-origin');
-    res.setHeader('Cross-Origin-Embedder-Policy', 'require-corp');
-    next();
-});
+// Initialize Express app
+const app = express();
 
+// Enable CORS with the specified options
+app.use(cors(corsOptions));
 
+// Security headers using Helmet
 app.use(
     helmet({
-        directives: {
-            reportTo: "self", // or your own reporting mechanism
-            "worker-src": "'self'", // you can define worker source policy
-        },
+        contentSecurityPolicy: false, // Adjust as necessary to avoid conflicts
+        crossOriginEmbedderPolicy: true, // Enforce COEP
+        crossOriginOpenerPolicy: { policy: 'same-origin' }, // Enforce COOP
     })
 );
 
@@ -35,8 +41,14 @@ app.use(express.json());
 // Import all routes
 app.use(routes);
 
+// Example route
 app.post("/api", (req, res) => {
-    res.send({ message: "post request" });
+    res.send({ message: "POST request received" });
+});
+
+// Start server
+app.listen(PORT, () => {
+    console.log(`Server running on port ${PORT}`);
 });
 
 app.get('/', (req, res) => {
