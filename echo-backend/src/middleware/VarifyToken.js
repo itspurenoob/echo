@@ -6,7 +6,7 @@ function verifyToken(req, res, next) {
   const token = req.cookies.authToken;  // Assumes the token is stored in a cookie named 'token'
 
   if (!token) {
-    return res.status(403).json({ message: 'Access denied, token missing' });
+    return res.status(403).json({ message: token });
   }
 
   try {
